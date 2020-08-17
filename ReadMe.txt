@@ -1,0 +1,1 @@
+I'm a little lazy to create solution projects and test projects separately , so solutions are inside test.
