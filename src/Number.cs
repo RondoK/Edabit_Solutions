@@ -12,7 +12,7 @@ namespace Domain
         /// <summary>
         /// number should be >= 0
         /// </summary>
-        /// <param name="number"></param>
+        /// <param name="number"> </param>
         public static Number Create(int number)
         {
             return new Number(number);
