@@ -8,9 +8,9 @@ namespace UnitTests.Number_
     public class Number_Less_Than_Zero
     {
         [Test]
-        public static void Create_Trows_Exception()
+        public static void Create_Throws_Exception()
         {
-            Assert.Throws<Exception>(()=>Number.Create(-1));
+            Assert.Throws<Exception>(() => Number.Create(-1));
         }
     }
 }

@@ -6,7 +6,8 @@ namespace Domain
 {
     public class Number
     {
-        public int[] Digits;
+        public int[] Digits { get; }
+        private int? _number;
 
         /// <summary>
         /// number should be >= 0
@@ -14,9 +15,16 @@ namespace Domain
         /// <param name="number"></param>
         public static Number Create(int number)
         {
-            return new Number();
+            return new Number(number);
         }
-       
+
+        public int GetNumber()
+        {
+            if (_number == null)
+                _number = Digits.DigitsToInt();
+            return _number.Value;
+        }
+
         public bool IsPalindrome()
         {
             return Digits.SequenceEqual(Digits.Reverse());
@@ -39,7 +47,31 @@ namespace Domain
         /// <returns></returns>
         private Number GetDescendant()
         {
-            return Digits.Length % 2 == 1 ? null : new Number(CreateDescendant(Digits));
+            if (Digits.Length > 2 &&
+                Digits.Length % 2 == 0)
+                return new Number(CreateDescendant(Digits));
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Empty if no descendants
+        /// </summary>
+        /// <returns></returns>
+        public IReadOnlyCollection<Number> GetDescendants()
+        {
+            var list = new List<Number>();
+            var currentNumber = this;
+            do
+            {
+                currentNumber = currentNumber.GetDescendant();
+                if (currentNumber == null)
+                    break;
+
+                list.Add(currentNumber);
+            } while (true);
+
+            return list;
         }
 
         private static int[] CreateDescendant(params int[] digits)
@@ -57,6 +89,7 @@ namespace Domain
         {
             if (number < 0)
                 throw new Exception("number should be > 0");
+            _number = number;
             Digits = number.ToDigits();
         }
 
@@ -69,6 +102,11 @@ namespace Domain
         {
             return obj is Number element && element.Digits.SequenceEqual(Digits);
         }
+
+        public override int GetHashCode()
+        {
+            return GetNumber().GetHashCode();
+        }
     }
 
     internal static class Extension
@@ -76,6 +114,11 @@ namespace Domain
         public static IEnumerable<int> ToDigits(this string str)
         {
             return str.Select(c => c - '0');
+        }
+
+        public static int DigitsToInt(this IEnumerable<int> digits)
+        {
+            return int.Parse(string.Concat(digits));
         }
         public static int[] ToDigits(this int number)
         {
